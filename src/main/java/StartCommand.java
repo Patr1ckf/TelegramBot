@@ -12,7 +12,8 @@ public class StartCommand implements CommandHandler{
         String firstName = user.getFirstName();
         message.setText("Hello " + firstName + "! Welcome to the chat!\n\n" +
                 "Try this:\n" +
-                "/makelist -> To start making a list of your shopping\n");
+                "/makelist -> To start making a list of your shopping\n" +
+                "/showlist -> To show the last shopping last\n");
         return message;
     }
 }
