@@ -13,7 +13,8 @@ public class StartCommand implements CommandHandler{
         message.setText("Hello " + firstName + "! Welcome to the chat!\n\n" +
                 "Try this:\n" +
                 "/makelist -> To start making a list of your shopping\n" +
-                "/showlist -> To show the last shopping last\n");
+                "/showlist -> To show the last shopping last\n" +
+                "/checkprice -> To check the price of the product");
         return message;
     }
 }

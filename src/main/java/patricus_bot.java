@@ -3,6 +3,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,12 +11,15 @@ public class patricus_bot extends TelegramLongPollingBot{
 
     private final Map<String, CommandHandler> commands = new HashMap<>();
     private MakeListCommand makeListCommand = new MakeListCommand();
+    private GetPriceCommand getPriceCommand = new GetPriceCommand();
     private boolean isMakingList = false;
+    private boolean isCheckingPrice = false;
 
     public patricus_bot() {
         commands.put("/start", new StartCommand());
         commands.put("/makelist", new MakeListCommand());
         commands.put("/showlist", new ShowListCommand());
+        commands.put("/checkprice", new GetPriceCommand());
     }
 
     @Override
@@ -32,8 +36,12 @@ public class patricus_bot extends TelegramLongPollingBot{
                     if(received.equals("/makelist")){
                         isMakingList = true;
                     }
-                    else{
+                    else if(received.equals("/checkprice")){
+                        isCheckingPrice = true;
+                    }
+                    else {
                         isMakingList=false;
+                        isCheckingPrice = false;
                     }
                     SendMessage message = command.execute(received, update);
                     message.setChatId(String.valueOf(chatId));
@@ -70,6 +78,20 @@ public class patricus_bot extends TelegramLongPollingBot{
                     e.printStackTrace();
                 }
             }
+            else if(isCheckingPrice){
+                SendMessage message;
+                getPriceCommand.savePage(received);
+                message = new SendMessage();
+                message.setChatId(String.valueOf(chatId));
+                message.setText(getPriceCommand.priceOfProduct(getPriceCommand.listOfPrices()));
+                isCheckingPrice=false;
+
+                try {
+                    execute(message);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
             else{
                 sendMessageIfUnknownCommand(chatId);
             }
@@ -83,7 +105,8 @@ public class patricus_bot extends TelegramLongPollingBot{
         message.setText("Unknown command :( \n\n" +
                 "Try this:\n" +
                 "/makelist -> To start making a shopping list\n" +
-                "/showlist -> To show the last shopping last");
+                "/showlist -> To show the last shopping last\n" +
+                "/checkprice -> To check the price of the product");
         try {
             execute(message);
         } catch (TelegramApiException e) {
