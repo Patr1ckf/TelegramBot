@@ -1,9 +1,12 @@
+import Commands.*;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.ChatLocation;
+import org.telegram.telegrambots.meta.api.objects.Location;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +23,7 @@ public class patricus_bot extends TelegramLongPollingBot{
         commands.put("/makelist", new MakeListCommand());
         commands.put("/showlist", new ShowListCommand());
         commands.put("/checkprice", new GetPriceCommand());
+        commands.put("/checkpricelist", new ShowPriceOfList());
     }
 
     @Override
@@ -80,10 +84,38 @@ public class patricus_bot extends TelegramLongPollingBot{
             }
             else if(isCheckingPrice){
                 SendMessage message;
-                getPriceCommand.savePage(received);
+                String priceFinal = null;
+                boolean success = true;
+
                 message = new SendMessage();
                 message.setChatId(String.valueOf(chatId));
-                message.setText(getPriceCommand.priceOfProduct(getPriceCommand.listOfPrices()));
+                message.setText("I'm checking the price, please wait a while");
+                try {
+                    execute(message);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+
+                message = new SendMessage();
+                message.setChatId(String.valueOf(chatId));
+
+                for(int i=0; i<3; i++){
+                    getPriceCommand.savePage(received);
+                    priceFinal = getPriceCommand.priceOfProduct(getPriceCommand.listOfPrices());
+                    if(!priceFinal.equals("NaN")){
+                        break;
+                    }
+                    else{
+                        success = false;
+                    }
+                }
+                if(success){
+                    message.setText("The average cost of "+received+" is "+ priceFinal+" zł");
+                }
+                else{
+                    message.setText("Sorry, I couldn't find this product :((");
+                }
+
                 isCheckingPrice=false;
 
                 try {
@@ -106,7 +138,8 @@ public class patricus_bot extends TelegramLongPollingBot{
                 "Try this:\n" +
                 "/makelist -> To start making a shopping list\n" +
                 "/showlist -> To show the last shopping last\n" +
-                "/checkprice -> To check the price of the product");
+                "/checkprice -> To check the price of the product\n"+
+                "/checkpricelist -> To check the price of the last shopping list");
         try {
             execute(message);
         } catch (TelegramApiException e) {

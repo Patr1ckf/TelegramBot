@@ -1,3 +1,5 @@
+package Commands;
+
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -14,7 +16,8 @@ public class StartCommand implements CommandHandler{
                 "Try this:\n" +
                 "/makelist -> To start making a list of your shopping\n" +
                 "/showlist -> To show the last shopping last\n" +
-                "/checkprice -> To check the price of the product");
+                "/checkprice -> To check the price of the product\n"+
+                "/checkpricelist -> To check the price of the last shopping list");
         return message;
     }
 }

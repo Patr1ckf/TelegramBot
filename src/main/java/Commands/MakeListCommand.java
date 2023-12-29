@@ -1,3 +1,5 @@
+package Commands;
+
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -10,7 +12,7 @@ public class MakeListCommand implements CommandHandler {
     private String received;
     private long chatId;
 
-    MakeListCommand(){
+    public MakeListCommand(){
         this.shoppingList = new ArrayList<>();
     }
 

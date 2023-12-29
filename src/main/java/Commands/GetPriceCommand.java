@@ -1,3 +1,6 @@
+package Commands;
+
+
 import org.htmlunit.BrowserVersion;
 import org.htmlunit.NicelyResynchronizingAjaxController;
 import org.htmlunit.WebClient;
@@ -8,8 +11,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -18,6 +19,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class GetPriceCommand implements CommandHandler{
 

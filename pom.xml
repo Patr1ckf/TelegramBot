@@ -23,11 +23,6 @@
         </dependency>
 
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.6</version>
-        </dependency>
-        <dependency>
             <groupId>commons-chain</groupId>
             <artifactId>commons-chain</artifactId>
             <version>1.1</version>
@@ -52,15 +47,11 @@
             <artifactId>spring-boot-autoconfigure</artifactId>
             <version>3.1.5</version>
         </dependency>
+
         <dependency>
-            <groupId>net.minidev</groupId>
-            <artifactId>json-smart</artifactId>
-            <version>2.4.11</version>
-        </dependency>
-        <dependency>
-            <groupId>com.vaadin.external.google</groupId>
-            <artifactId>android-json</artifactId>
-            <version>20180813</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.6</version>
         </dependency>
 
     </dependencies>
