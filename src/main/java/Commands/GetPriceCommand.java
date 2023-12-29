@@ -1,6 +1,5 @@
 package Commands;
 
-
 import org.htmlunit.BrowserVersion;
 import org.htmlunit.NicelyResynchronizingAjaxController;
 import org.htmlunit.WebClient;
@@ -40,23 +39,24 @@ public class GetPriceCommand implements CommandHandler{
     public void savePage(String productName) {
         Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
         String link = "https://www.ceneo.pl/;szukaj-" + productName;
-        WebClient webClient = new WebClient(BrowserVersion.CHROME);
         HtmlPage htmlPage = null;
 
-        webClient.getOptions().setJavaScriptEnabled(true);
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
-        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-        webClient.waitForBackgroundJavaScriptStartingBefore(3000);
+        try (WebClient webClient = new WebClient(BrowserVersion.CHROME)) {
+            webClient.getOptions().setJavaScriptEnabled(true);
+            webClient.getOptions().setThrowExceptionOnScriptError(false);
+            webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+            webClient.waitForBackgroundJavaScriptStartingBefore(2000);
 
-        try {
-            htmlPage = webClient.getPage(link);
-            webClient.waitForBackgroundJavaScript(3000);
-        } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                htmlPage = webClient.getPage(link);
+                webClient.waitForBackgroundJavaScript(2000);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         if (htmlPage!=null){
-            try (FileWriter fileWriter = new FileWriter("output.html")) {
+            try (FileWriter fileWriter = new FileWriter("outputs/output.html")) {
                 fileWriter.write(Jsoup.parse(htmlPage.asXml()).toString());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -65,19 +65,19 @@ public class GetPriceCommand implements CommandHandler{
     }
 
     public ArrayList<String> listOfPrices() {
-        String impr;
+        String impressionFromScript;
         pricesList = new ArrayList<>();
 
         try {
-            File inputFile = new File("output.html");
+            File inputFile = new File("outputs/output.html");
             Document doc = Jsoup.parse(inputFile, "UTF-8");
             Elements scriptElements = doc.getElementsByTag("script");
 
             for (Element script : scriptElements) {
                 String scriptContent = script.html();
                 if (scriptContent.contains("var impressions")) {
-                    impr = extractImpressions(scriptContent);
-                    JSONArray jsonArray = new JSONArray(impr);
+                    impressionFromScript = extractImpressions(scriptContent);
+                    JSONArray jsonArray = new JSONArray(impressionFromScript);
 
                     for (int i = 0; i < Math.min(4, jsonArray.length()); i++) { // First 4 prices on ceneo.pl shows the best result of searching
                         JSONObject obj = jsonArray.getJSONObject(i);
@@ -93,7 +93,7 @@ public class GetPriceCommand implements CommandHandler{
         return pricesList;
     }
 
-    private static String extractImpressions(String scriptContent) {
+    static String extractImpressions(String scriptContent) {
         Pattern pattern = Pattern.compile("var impressions\\s*=\\s*(.*?);");
         Matcher matcher = pattern.matcher(scriptContent);
         if (matcher.find()) {
@@ -103,7 +103,7 @@ public class GetPriceCommand implements CommandHandler{
     }
 
     public String priceOfProduct(ArrayList<String> prices){
-        String price = null;
+        String price;
         double sum = 0;
         for(String element:prices){
             sum += Double.parseDouble(element);

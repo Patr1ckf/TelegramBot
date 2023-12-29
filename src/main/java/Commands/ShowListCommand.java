@@ -12,7 +12,7 @@ public class ShowListCommand implements CommandHandler{
 
         StringBuilder shoppingList = new StringBuilder();
         for(String x:MakeListCommand.shoppingList){
-            shoppingList.append(x+"\n");
+            shoppingList.append(x).append("\n");
         }
 
         message.setText("Your shopping list:\n" + shoppingList);

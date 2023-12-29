@@ -7,7 +7,7 @@ public class ShowPriceOfList implements CommandHandler{
     GetPriceCommand getPrice;
     StringBuilder shoppingListPrices;
     String priceOfProduct;
-    double sum;
+    double sum =0;
 
     @Override
     public SendMessage execute(String receivedText, Update update) {
@@ -22,21 +22,24 @@ public class ShowPriceOfList implements CommandHandler{
             for(String x:MakeListCommand.shoppingList){
                 getPrice.savePage(x);
                 priceOfProduct = getPrice.priceOfProduct(getPrice.listOfPrices());
+                priceOfProduct = priceOfProduct.replace(',','.');
                 if(priceOfProduct.equals("NaN")){
                     shoppingListPrices.append(x);
-                    shoppingListPrices.append(": price not found");
+                    shoppingListPrices.append(": price not found\n");
                 }
                 else {
                     shoppingListPrices.append(x);
                     shoppingListPrices.append(": ");
                     shoppingListPrices.append(priceOfProduct);
                     shoppingListPrices.append(" zł\n");
-//                    sum += Double.parseDouble(priceOfProduct);
+                    sum += Double.parseDouble(priceOfProduct);
+
                 }
             }
             shoppingListPrices.append("\n");
             shoppingListPrices.append("Sum of your products: ");
             shoppingListPrices.append(sum);
+            shoppingListPrices.append(" zł");
             message.setText(String.valueOf(shoppingListPrices));
         }
         else{

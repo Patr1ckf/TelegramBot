@@ -9,18 +9,16 @@ import java.util.List;
 public class MakeListCommand implements CommandHandler {
 
     public static List<String> shoppingList;
-    private String received;
-    private long chatId;
 
     public MakeListCommand(){
-        this.shoppingList = new ArrayList<>();
+        shoppingList = new ArrayList<>();
     }
 
     @Override
     public SendMessage execute(String receivedText, Update update) {
 
         SendMessage message = new SendMessage();
-        chatId = update.getMessage().getChatId();
+        long chatId = update.getMessage().getChatId();
         message.setText("What would you like to add to your shopping list?\n");
         message.setChatId(String.valueOf(chatId));
         return message;
